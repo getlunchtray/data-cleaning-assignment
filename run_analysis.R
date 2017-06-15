@@ -20,7 +20,7 @@ test_mean_and_std_values <- test_values[,required_columns$column]
 setnames(test_mean_and_std_values, as.character(required_columns$label)) 
 
 test_merged <- merge(test_mean_and_std_values, test_labels, by="row.names")
-cleaned_test_values <- left_join(test_merged, labels_key)
+cleaned_test_values <- mutate(left_join(test_merged, labels_key), set="test")
 
 # Clean the train values 
 train_values <- read.table("original_data/train/X_train.txt")
@@ -31,4 +31,8 @@ train_mean_and_std_values <- train_values[,required_columns$column]
 setnames(train_mean_and_std_values, as.character(required_columns$label)) 
 
 train_merged <- merge(train_mean_and_std_values, train_labels, by="row.names")
-cleaned_train_values <- left_join(train_merged, labels_key)
+cleaned_train_values <- mutate(left_join(train_merged, labels_key), set="train")
+
+# And now the magic starts...
+
+all_values <- rbind(cleaned_train_values, cleaned_test_values)
